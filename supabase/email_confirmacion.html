@@ -1,0 +1,110 @@
+<!-- =====================================================================
+  FT PRODUCTOS · Plantilla de correo "Confirm signup" (código de verificación)
+  Pégala en: Supabase › Authentication › Emails › Templates › Confirm signup
+  Asunto sugerido:  Tu código de confirmación: {{ .Token }} · FT Productos
+====================================================================== -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <title>Confirma tu cuenta · FT Productos</title>
+</head>
+<body style="margin:0;padding:0;background:#eef2fb;font-family:'Poppins','Segoe UI',Arial,Helvetica,sans-serif;color:#13213d;">
+  <!-- texto de vista previa (se ve en la bandeja de entrada) -->
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Tu código para confirmar tu cuenta en FT Productos es {{ .Token }}</div>
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#eef2fb;padding:32px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(10,31,68,.12);">
+
+          <!-- Encabezado -->
+          <tr>
+            <td style="background:#0a1f44;background-image:linear-gradient(135deg,#0a1f44 0%,#1e4290 100%);padding:34px 28px 30px;text-align:center;">
+              <div style="font-family:Georgia,'Times New Roman',serif;font-size:44px;line-height:1;color:#ffffff;letter-spacing:4px;font-weight:bold;">
+                F<span style="font-size:30px;vertical-align:middle;">🗝️</span>T
+              </div>
+              <div style="margin-top:6px;font-size:26px;font-weight:800;color:#ffc93c;letter-spacing:-0.5px;">Productos</div>
+              <div style="margin-top:8px;font-size:13px;color:#a9b8d8;">Jugos naturales y productos de colmado · Entrega a tu negocio</div>
+            </td>
+          </tr>
+          <!-- franja amarilla -->
+          <tr><td style="height:6px;background:#ffc93c;font-size:0;line-height:0;">&nbsp;</td></tr>
+
+          <!-- Contenido -->
+          <tr>
+            <td style="padding:36px 32px 10px;text-align:center;">
+              <div style="font-size:40px;line-height:1;">✉️</div>
+              <h1 style="margin:14px 0 8px;font-size:24px;color:#0a1f44;">¡Bienvenido a FT Productos!</h1>
+              <p style="margin:0;font-size:15px;line-height:1.6;color:#4a5670;">
+                Para terminar de crear tu cuenta con el correo<br>
+                <b style="color:#0a1f44;">{{ .Email }}</b><br>
+                escribe este código en la página:
+              </p>
+            </td>
+          </tr>
+
+          <!-- Código -->
+          <tr>
+            <td align="center" style="padding:22px 32px 6px;">
+              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="background:#fff8e1;border:2px dashed #ffc93c;border-radius:16px;padding:18px 30px;">
+                    <span style="font-family:'Courier New',Consolas,monospace;font-size:40px;font-weight:bold;letter-spacing:12px;color:#0a1f44;">{{ .Token }}</span>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:12px 0 0;font-size:13px;color:#8a6200;">⏱ El código vence en 1 hora y solo se puede usar una vez.</p>
+            </td>
+          </tr>
+
+          <!-- Botón -->
+          <tr>
+            <td align="center" style="padding:26px 32px 8px;">
+              <a href="{{ .SiteURL }}/verificar?email={{ .Email }}"
+                 style="display:inline-block;background:#ffc93c;color:#0a1f44;text-decoration:none;font-weight:700;font-size:16px;padding:14px 34px;border-radius:12px;">
+                Ir a confirmar mi cuenta →
+              </a>
+            </td>
+          </tr>
+
+          <!-- Qué sigue -->
+          <tr>
+            <td style="padding:26px 32px 8px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f4f6fb;border-radius:14px;">
+                <tr>
+                  <td style="padding:18px 20px;font-size:14px;line-height:1.7;color:#4a5670;">
+                    <b style="color:#0a1f44;">Después de confirmar podrás:</b><br>
+                    🛒 Comprar jugos y productos de colmado<br>
+                    🧭 Recibir tus pedidos por la ruta más rápida<br>
+                    📦 Seguir cada paso de tu entrega en tiempo real<br>
+                    🧾 Descargar la factura de cada pedido
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Seguridad -->
+          <tr>
+            <td style="padding:22px 32px 30px;text-align:center;font-size:12px;line-height:1.6;color:#8a94a8;">
+              Si tú no creaste esta cuenta, puedes ignorar este correo con tranquilidad.<br>
+              Nunca te pediremos este código por teléfono ni por WhatsApp.
+            </td>
+          </tr>
+
+          <!-- Pie -->
+          <tr>
+            <td style="background:#0a1f44;padding:20px 28px;text-align:center;font-size:12px;line-height:1.6;color:#a9b8d8;">
+              <b style="color:#ffc93c;">FT Productos</b> · Hato Mayor del Rey, República Dominicana<br>
+              Este es un correo automático, por favor no lo respondas.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
