@@ -8,6 +8,7 @@ import { estadoLabel, fmtDate, fmtMoney } from '../../lib/format'
 import { getCurrentPosition } from '../../lib/maps'
 import { errMsg, supabase } from '../../lib/supabase'
 import { DeliveryLog, ESTADOS, LatLng, Order, OrderStatus, Profile } from '../../lib/types'
+import { ComprobanteCard } from '../../components/Comprobante'
 
 type Quick = { estado: OrderStatus | null; nota: string; label: string }
 
@@ -226,6 +227,7 @@ export default function OrderDelivery() {
             <tfoot><tr><td /><td><b>Cobrar · {order.metodo_pago}</b></td><td className="right"><b>{fmtMoney(order.total)}</b></td></tr></tfoot>
           </table>
           {order.notas_cliente && <div className="alert alert-warn"><b>Nota del cliente:</b> {order.notas_cliente}</div>}
+          <ComprobanteCard order={order} canUpload={false} />
           <small className="muted">Creado: {fmtDate(order.created_at)}</small>
         </div>
 

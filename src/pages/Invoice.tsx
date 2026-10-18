@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { ComprobanteImagen } from '../components/Comprobante'
 import { Loading } from '../components/Guards'
 import { useAuth } from '../context/AuthContext'
 import { CUENTA_BANCARIA, NEGOCIO } from '../lib/config'
@@ -23,6 +24,8 @@ export default function Invoice() {
   const [order, setOrder] = useState<Order | null>(null)
   const [entregado, setEntregado] = useState<DeliveryLog | null>(null)
   const [loading, setLoading] = useState(true)
+  const [compListo, setCompListo] = useState(false)
+  const marcarCompListo = useCallback(() => setCompListo(true), [])
 
   useEffect(() => {
     Promise.all([
@@ -38,8 +41,12 @@ export default function Invoice() {
 
   // ?print=1 abre el diálogo de impresión automáticamente
   useEffect(() => {
-    if (order && params.get('print') === '1') setTimeout(() => window.print(), 600)
-  }, [order, params])
+    // (espera a que cargue la imagen del comprobante para que salga en el PDF)
+    if (!order || params.get('print') !== '1') return
+    if (order.comprobante_path && !compListo) return
+    const t = setTimeout(() => window.print(), 600)
+    return () => clearTimeout(t)
+  }, [order, params, compListo])
 
   useEffect(() => {
     if (!order) return
@@ -151,6 +158,26 @@ export default function Invoice() {
             </tbody>
           </table>
         </section>
+
+        {order.metodo_pago === 'transferencia' && (
+          <section className="inv-comp">
+            <h4>Comprobante de la transferencia</h4>
+            {order.comprobante_path ? (
+              <div className="inv-comp-body">
+                <ComprobanteImagen path={order.comprobante_path} onLoad={marcarCompListo} />
+                <div className="inv-comp-meta">
+                  <span>Transferido a: <b>{CUENTA_BANCARIA.banco}</b> · {CUENTA_BANCARIA.tipo}</span>
+                  <span>Cuenta: <b>{CUENTA_BANCARIA.numero}</b></span>
+                  <span>Titular: {CUENTA_BANCARIA.titular}</span>
+                  <span>Monto: <b>{fmtMoney(order.total)}</b></span>
+                  {order.comprobante_at && <span>Recibido: {fmtDate(order.comprobante_at)}</span>}
+                </div>
+              </div>
+            ) : (
+              <p className="inv-comp-none">⚠️ Pendiente: el cliente aún no ha subido la captura del pago.</p>
+            )}
+          </section>
+        )}
 
         <footer className="inv-foot">
           <div className="inv-sign"><span />Recibido por</div>

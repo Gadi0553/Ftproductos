@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { Loading } from '../components/Guards'
 import MapView, { MapMarker } from '../components/MapView'
@@ -6,6 +6,7 @@ import { LogTimeline, OrderProgress, StatusBadge } from '../components/OrderBits
 import { COLORS } from '../components/useGoogleMap'
 import { fmtDate, fmtMoney } from '../lib/format'
 import BankInfo from '../components/BankInfo'
+import { ComprobanteCard } from '../components/Comprobante'
 import { supabase } from '../lib/supabase'
 import type { DeliveryLog, Order } from '../lib/types'
 
@@ -13,10 +14,12 @@ import type { DeliveryLog, Order } from '../lib/types'
 export default function OrderDetail() {
   const { id } = useParams()
   const loc = useLocation()
-  const nuevo = (loc.state as { nuevo?: boolean } | null)?.nuevo
+  const st = loc.state as { nuevo?: boolean; compFallo?: boolean } | null
+  const nuevo = st?.nuevo
   const [order, setOrder] = useState<Order | null>(null)
   const [logs, setLogs] = useState<DeliveryLog[]>([])
   const [loading, setLoading] = useState(true)
+  const loadRef = useRef<() => void>(() => {})
 
   useEffect(() => {
     const load = async () => {
@@ -28,6 +31,7 @@ export default function OrderDetail() {
       setLogs((l as DeliveryLog[]) ?? [])
       setLoading(false)
     }
+    loadRef.current = load
     load()
     const ch = supabase
       .channel(`order-${id}`)
@@ -56,6 +60,7 @@ export default function OrderDetail() {
     <div className="container page">
       <Link to="/mis-pedidos" className="back">← Mis pedidos</Link>
       {nuevo && <div className="alert alert-ok">¡Gracias por tu compra! Tu pedido fue recibido y pronto lo prepararemos.</div>}
+      {st?.compFallo && <div className="alert alert-warn">Tu pedido se creó, pero no pudimos subir el comprobante. Vuelve a subirlo abajo, en "Comprobante de pago".</div>}
       <div className="row-between">
         <h1>Pedido #{order.numero}</h1>
         <Link to={`/factura/${order.id}`} className="btn btn-shine">🧾 Ver factura / PDF</Link>
@@ -82,6 +87,7 @@ export default function OrderDetail() {
           {order.metodo_pago === 'transferencia' && !['entregado', 'cancelado'].includes(order.estado) && (
             <BankInfo total={Number(order.total)} pedido={order.numero} />
           )}
+          <ComprobanteCard order={order} canUpload={!['entregado', 'cancelado'].includes(order.estado)} onChanged={() => loadRef.current()} />
           {order.notas_cliente && <p><b>Tus notas:</b> {order.notas_cliente}</p>}
           <h3>Entrega en</h3>
           <p><b>{order.empresa}</b><br /><small className="muted">{order.direccion}</small></p>

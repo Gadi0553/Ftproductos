@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import { fmtMoney } from '../lib/format'
 import BankInfo from '../components/BankInfo'
+import { ComprobantePicker } from '../components/Comprobante'
+import { subirComprobante } from '../lib/comprobantes'
 import { errMsg, supabase } from '../lib/supabase'
 import { nombresZonas, useZonasActivas, zonaPara } from '../lib/zonas'
 
@@ -13,6 +15,7 @@ export default function Cart() {
   const { user, client } = useAuth()
   const [notas, setNotas] = useState('')
   const [metodo, setMetodo] = useState<'efectivo' | 'transferencia' | 'tarjeta'>('efectivo')
+  const [comprobante, setComprobante] = useState<File | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const nav = useNavigate()
@@ -20,18 +23,36 @@ export default function Cart() {
   const zona = client ? zonaPara({ lat: client.latitude, lng: client.longitude }, zonas) : null
   const fueraDeZona = !!client && zonas.length > 0 && !zona
 
+  const faltaComprobante = metodo === 'transferencia' && !comprobante
+
   const checkout = async () => {
+    if (faltaComprobante) return setError('Sube la captura de la transferencia para poder confirmar el pedido.')
     setBusy(true)
     setError(null)
+    // 1) Primero se sube la captura: si falla, el pedido NO se crea
+    let compPath: string | null = null
+    if (metodo === 'transferencia' && comprobante && user) {
+      try { compPath = await subirComprobante(comprobante, user.id) } catch (e) {
+        setBusy(false)
+        return setError(`No pudimos subir el comprobante: ${errMsg(e)}`)
+      }
+    }
+    // 2) Se crea el pedido
     const { data, error } = await supabase.rpc('create_order', {
       items: items.map((i) => ({ variant_id: i.variantId, cantidad: i.cantidad })),
       notas: notas || null,
       metodo,
     })
+    if (error) { setBusy(false); return setError(errMsg(error)) }
+    // 3) Se asocia la captura al pedido
+    let compFallo = false
+    if (compPath) {
+      const r = await supabase.rpc('set_order_comprobante', { p_order: data, p_path: compPath })
+      compFallo = !!r.error
+    }
     setBusy(false)
-    if (error) return setError(errMsg(error))
     clear()
-    nav(`/mis-pedidos/${data}`, { state: { nuevo: true } })
+    nav(`/mis-pedidos/${data}`, { state: { nuevo: true, compFallo } })
   }
 
   if (!items.length) {
@@ -102,13 +123,22 @@ export default function Cart() {
                   <option value="tarjeta">Tarjeta al recibir</option>
                 </select>
               </label>
-              {metodo === 'transferencia' && <BankInfo total={total} />}
+              {metodo === 'transferencia' && (
+                <>
+                  <BankInfo total={total} />
+                  <ComprobantePicker file={comprobante} onChange={setComprobante} />
+                  {comprobante
+                    ? <p className="comp-hint">Se enviará junto con tu pedido y aparecerá en tu factura.</p>
+                    : <div className="alert alert-warn comp-required">🔒 Para confirmar el pedido primero debes subir la captura de la transferencia.</div>}
+                </>
+              )}
               <label>Notas para la entrega
                 <textarea rows={3} value={notas} onChange={(e) => setNotas(e.target.value)} placeholder="Horario, a quién entregar, etc." />
               </label>
               {error && <div className="alert alert-error">{error}</div>}
-              <button className="btn btn-shine block btn-lg" disabled={busy || fueraDeZona} onClick={checkout}>
-                {busy ? 'Procesando…' : `Confirmar pedido · ${fmtMoney(total)}`}
+              <button className="btn btn-shine block btn-lg" disabled={busy || fueraDeZona || faltaComprobante} onClick={checkout}
+                title={faltaComprobante ? 'Sube el comprobante de la transferencia' : undefined}>
+                {busy ? 'Procesando…' : faltaComprobante ? '🔒 Sube el comprobante para confirmar' : `Confirmar pedido · ${fmtMoney(total)}`}
               </button>
             </>
           )}

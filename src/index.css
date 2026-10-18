@@ -639,16 +639,17 @@ input[type="range"] { padding: 0; accent-color: var(--navy); }
    Con Poppins (altura de la "P" 0.702em) y line-height .703, la caja del texto
    mide exactamente de la parte de arriba de la "P" a la línea base, así que
    "Productos" queda alineado arriba y abajo con las letras del logo. */
-.brand, .qr-brand { --logo-h: 36px; align-items: flex-start; gap: 8px; }
+.brand, .qr-brand { --logo-h: 36px; --txt: .8; align-items: flex-start; gap: 8px; }
 .qr-brand { --logo-h: 48px; gap: 10px; }
 .brand img, .brand .brand-logo, .qr-brand img { height: var(--logo-h); width: auto; max-width: none; }
 .brand span, .qr-brand span {
-  font-size: calc(var(--logo-h) * 230 / 256 / .702);
+  /* --txt: "Productos" mide ese porcentaje de las letras del logo y queda centrado */
+  font-size: calc(var(--logo-h) * 230 / 256 * var(--txt) / .702);
   line-height: .703;
-  margin-top: calc(var(--logo-h) * 4 / 256);
+  margin-top: calc(var(--logo-h) * (4 + 230 * (1 - var(--txt)) / 2) / 256);
   font-weight: 700; letter-spacing: -.02em; white-space: nowrap;
 }
-@media (max-width: 1150px) { .brand { --logo-h: 32px; } }
+@media (max-width: 1150px) { .brand { --logo-h: 30px; } }
 
 /* ---------- Código de verificación ---------- */
 .verify-card { text-align: center; align-items: stretch; }
@@ -658,3 +659,40 @@ input[type="range"] { padding: 0; accent-color: var(--navy); }
 .otp input { width: 46px; min-width: 0; flex: 0 1 46px; height: 58px; padding: 0; text-align: center; font-size: 1.7rem; font-weight: 700; color: var(--navy); border: 2px solid var(--line); border-radius: 14px; background: #f8faff; transition: border-color .15s, transform .1s, box-shadow .15s; }
 .otp input:focus { border-color: var(--yellow); background: #fff; box-shadow: 0 0 0 4px rgba(255,201,60,.3); transform: translateY(-2px); }
 @media (max-width: 480px) { .otp { gap: 4px; } .otp input { width: 34px; flex-basis: 34px; height: 46px; font-size: 1.2rem; border-radius: 10px; } }
+
+/* ---------- Comprobante de pago (transferencias) ---------- */
+.btn-ghost { background: transparent; color: var(--navy); border-color: transparent; }
+.btn-ghost:hover:not(:disabled) { background: #eef2fb; }
+.chip-ok { background: #e8f8ee; color: #136c34; }
+.chip-warn { background: #fff7de; color: #7a5600; }
+.comp-picker { display: flex; flex-direction: column; gap: 8px; }
+.comp-drop { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; padding: 20px 14px; border: 2px dashed #c9d3ea; border-radius: 16px; background: #f8faff; color: var(--navy); font: inherit; cursor: pointer; text-align: center; transition: border-color .15s, background .15s, transform .1s; }
+.comp-drop:hover, .comp-drop.over { border-color: var(--yellow); background: #fffaf0; transform: translateY(-1px); }
+.comp-drop b { font-size: 1rem; }
+.comp-drop small { color: #6b7790; font-size: .78rem; }
+.comp-drop-icon { font-size: 1.9rem; line-height: 1; }
+.comp-selected { display: flex; gap: 12px; align-items: center; padding: 10px; border: 1px solid #bfe8cd; background: #f3fbf6; border-radius: 14px; }
+.comp-selected img, .comp-pdf { width: 74px; height: 74px; object-fit: cover; border-radius: 10px; flex-shrink: 0; background: #fff; border: 1px solid var(--line); }
+.comp-pdf { display: grid; place-items: center; font-weight: 800; color: #c0392b; }
+.comp-selected .grow { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.comp-selected b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.comp-card { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fbfcff; }
+.comp-card h3 { margin: 0; }
+.comp-img { display: block; max-width: 340px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+.comp-img img { display: block; width: 100%; height: auto; max-height: 460px; object-fit: contain; }
+.comp-loading { padding: 18px; color: #6b7790; font-size: .9rem; }
+.checkout .comp-picker { margin-top: 4px; }
+.comp-hint { font-size: .8rem; color: #6b7790; margin: -2px 0 0; }
+
+/* En la factura */
+.inv-comp { margin-top: 18px; padding-top: 14px; border-top: 1px dashed #cfd6e4; break-inside: avoid; page-break-inside: avoid; }
+.inv-comp h4 { margin: 0 0 8px; }
+.inv-comp-body { display: flex; gap: 16px; align-items: flex-start; }
+.inv-comp .comp-img { max-width: 230px; }
+.inv-comp .comp-img img { max-height: 320px; }
+.inv-comp-meta { display: flex; flex-direction: column; gap: 3px; font-size: .85rem; color: #4a5670; }
+.inv-comp-none { font-size: .85rem; color: #8a6200; }
+@media print { .inv-comp .comp-img { border-color: #ccc; } }
+.btn-shine:disabled { background: #e3e7ef; color: #7a849a; box-shadow: none; cursor: not-allowed; filter: none; }
+.btn-shine:disabled::after { display: none; }
+.comp-required { margin: 0; font-size: .85rem; }

@@ -147,6 +147,8 @@ export interface Order {
   longitude: number | null
   asignado_a: string | null
   zona: string | null
+  comprobante_path?: string | null
+  comprobante_at?: string | null
   created_at: string
   updated_at: string
   order_items?: OrderItem[]
