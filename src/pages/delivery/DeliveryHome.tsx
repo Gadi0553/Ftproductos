@@ -5,7 +5,7 @@ import MapView, { MapMarker } from '../../components/MapView'
 import { StatusBadge } from '../../components/OrderBits'
 import { COLORS } from '../../components/useGoogleMap'
 import { useAuth } from '../../context/AuthContext'
-import { fmtDate, fmtDistance, fmtMoney } from '../../lib/format'
+import { fmtDate, fmtDistance, fmtMoney, destinatario } from '../../lib/format'
 import { getCurrentPosition, haversine } from '../../lib/maps'
 import { errMsg, supabase } from '../../lib/supabase'
 import type { LatLng, Order } from '../../lib/types'
@@ -61,9 +61,9 @@ export default function DeliveryHome() {
       .map((o) => ({
         id: o.id,
         pos: { lat: o.latitude!, lng: o.longitude! },
-        title: `#${o.numero} ${o.empresa ?? ''}`,
+        title: `#${o.numero} ${destinatario(o)}`,
         color: o.asignado_a ? COLORS.yellow : '#8a97b1',
-        info: `<b>#${o.numero} · ${o.empresa ?? ''}</b><br>${o.direccion ?? ''}<br>${o.asignado_a ? 'Asignado a ti' : 'Disponible'}`,
+        info: `<b>#${o.numero} · ${destinatario(o)}</b><br>${o.direccion ?? ''}<br>${o.asignado_a ? 'Asignado a ti' : 'Disponible'}`,
         onClick: () => nav(`/delivery/${o.id}`),
       }))
     if (me) m.push({ id: 'me', pos: me, title: 'Tú', color: COLORS.blue, info: '<b>Tu ubicación</b>' })
@@ -112,7 +112,7 @@ export default function DeliveryHome() {
             return (
               <div key={o.id} className="card delivery-card">
                 <div className="grow">
-                  <div className="row"><b>#{o.numero} · {o.empresa}</b><StatusBadge estado={o.estado} />{o.zona && <span className="chip">📍 {o.zona}</span>}</div>
+                  <div className="row"><b>#{o.numero} · {destinatario(o)}</b><StatusBadge estado={o.estado} />{o.zona && <span className="chip">📍 {o.zona}</span>}</div>
                   <small className="muted">{o.cliente_nombre} · {o.cliente_telefono}</small>
                   <small>{o.direccion}</small>
                   <small className="muted">

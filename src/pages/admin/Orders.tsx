@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Loading } from '../../components/Guards'
 import { StatusBadge } from '../../components/OrderBits'
-import { fmtDate, fmtMoney } from '../../lib/format'
+import { fmtDate, fmtMoney, destinatario } from '../../lib/format'
 import { supabase } from '../../lib/supabase'
 import { ESTADOS, Order, OrderStatus, Profile } from '../../lib/types'
 
@@ -57,7 +57,7 @@ export default function AdminOrders() {
               {shown.map((o) => (
                 <tr key={o.id} className="clickable" onClick={() => nav(`/admin/pedidos/${o.id}`)}>
                   <td><b>{o.numero}</b></td>
-                  <td>{o.empresa}<br /><small className="muted">{o.cliente_nombre} · {o.cliente_telefono}</small>{o.zona && <><br /><span className="chip">📍 {o.zona}</span></>}</td>
+                  <td>{destinatario(o)}<br /><small className="muted">{o.empresa ? `${o.cliente_nombre} · ` : ''}{o.cliente_telefono}</small>{o.zona && <><br /><span className="chip">📍 {o.zona}</span></>}</td>
                   <td><small>{o.order_items?.map((i) => `${i.cantidad}× ${i.nombre} (${i.presentacion})`).join(', ')}</small></td>
                   <td className="nowrap">{fmtDate(o.created_at)}</td>
                   <td><StatusBadge estado={o.estado} /></td>

@@ -33,12 +33,12 @@ export default function Home() {
             <span className="eyebrow">Jugos naturales · Entrega a domicilio</span>
             <h1>Lo más fresco, <span className="hl">directo a tu negocio</span></h1>
             <p>
-              Regístrate, marca la ubicación de tu empresa y haz tu pedido. Nosotros trazamos la ruta más rápida
+              Regístrate, marca dónde te entregamos y haz tu pedido. Nosotros trazamos la ruta más rápida
               con Google Maps y Waze para llevártelo, y puedes seguir cada paso de la entrega.
             </p>
             <div className="hero-cta">
               <Link to="/tienda" className="btn btn-yellow btn-lg">Ver la tienda</Link>
-              {!user && <Link to="/registro" className="btn btn-outline-light btn-lg">Registrar mi empresa</Link>}
+              {!user && <Link to="/registro" className="btn btn-outline-light btn-lg">Crear mi cuenta</Link>}
             </div>
           </div>
           <div className="hero-art" aria-hidden>
@@ -51,7 +51,7 @@ export default function Home() {
 
       <section className="container page">
         <div className="features">
-          <div className="feature card"><span>📝</span><h3>1. Regístrate</h3><p>Crea tu perfil con los datos y la ubicación de tu empresa.</p></div>
+          <div className="feature card"><span>📝</span><h3>1. Regístrate</h3><p>Crea tu cuenta como usuario básico o como empresa y marca dónde te entregamos.</p></div>
           <div className="feature card"><span>🛒</span><h3>2. Compra</h3><p>Elige jugos por unidad, litro o galón, y otros productos.</p></div>
           <div className="feature card"><span>🧭</span><h3>3. Ruta óptima</h3><p>Calculamos el camino más rápido hasta ti con tráfico en tiempo real.</p></div>
           <div className="feature card"><span>📦</span><h3>4. Seguimiento</h3><p>Ves cada paso y nota de la entrega hasta que llega.</p></div>

@@ -4,7 +4,7 @@ import { Loading } from '../../components/Guards'
 import { LogTimeline, OrderProgress, StatusBadge } from '../../components/OrderBits'
 import RoutePanel from '../../components/RoutePanel'
 import { useAuth } from '../../context/AuthContext'
-import { estadoLabel, fmtDate, fmtMoney } from '../../lib/format'
+import { estadoLabel, fmtDate, fmtMoney, destinatario } from '../../lib/format'
 import { getCurrentPosition } from '../../lib/maps'
 import { errMsg, supabase } from '../../lib/supabase'
 import { DeliveryLog, ESTADOS, LatLng, Order, OrderStatus, Profile } from '../../lib/types'
@@ -156,7 +156,7 @@ export default function OrderDelivery() {
     <>
       <Link to={isAdmin ? '/admin/pedidos' : '/delivery'} className="back">← {isAdmin ? 'Pedidos' : 'Mis entregas'}</Link>
       <div className="row-between">
-        <h1>Pedido #{order.numero} · {order.empresa}</h1>
+        <h1>Pedido #{order.numero} · {destinatario(order)}</h1>
         <Link to={`/factura/${order.id}`} className="btn btn-sm btn-yellow">🧾 Factura / PDF</Link>
         <StatusBadge estado={order.estado} />
       </div>
@@ -196,7 +196,7 @@ export default function OrderDelivery() {
         {hasDest ? (
           <RoutePanel
             destination={{ lat: order.latitude!, lng: order.longitude! }}
-            destName={`${order.empresa ?? 'Cliente'} — ${order.cliente_nombre ?? ''}`}
+            destName={order.empresa ? `${order.empresa} — ${order.cliente_nombre ?? ''}` : destinatario(order)}
             onOrigin={setOrigin}
           />
         ) : (
@@ -207,7 +207,7 @@ export default function OrderDelivery() {
       <div className="two-col">
         <div className="card">
           <h3>Cliente</h3>
-          <p><b>{order.cliente_nombre}</b><br />{order.empresa}<br /><small className="muted">{order.direccion}</small>{order.zona && <><br /><span className="chip">📍 Zona: {order.zona}</span></>}</p>
+          <p><b>{order.cliente_nombre}</b><br />{order.empresa ?? <span className="chip">👤 Usuario básico</span>}<br /><small className="muted">{order.direccion}</small>{order.zona && <><br /><span className="chip">📍 Zona: {order.zona}</span></>}</p>
           {tel && (
             <div className="row">
               <a className="btn btn-sm btn-outline" href={`tel:${tel}`}>📞 Llamar</a>

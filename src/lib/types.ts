@@ -14,8 +14,11 @@ export interface Profile {
   created_at: string
 }
 
+export type ClientTipo = 'basico' | 'empresa'
+
 export interface Client {
   id: number | string
+  tipo?: ClientTipo
   user_id: string | null
   nombre: string
   apellido: string

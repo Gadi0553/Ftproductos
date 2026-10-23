@@ -44,3 +44,11 @@ export function presentacionTexto(unidad: Unidad, cantidad: number) {
     default: return `${c} ${unidadLabel(unidad).toLowerCase()}`
   }
 }
+
+/** Nombre a mostrar del destino: la empresa, o el nombre de la persona si es usuario básico. */
+export const destinatario = (o: { empresa?: string | null; cliente_nombre?: string | null }) =>
+  (o.empresa && o.empresa.trim()) || (o.cliente_nombre && o.cliente_nombre.trim()) || 'Cliente'
+
+/** Nombre a mostrar de un cliente (empresa o persona). */
+export const nombreCliente = (c: { empresa?: string | null; local?: string | null; nombre?: string | null; apellido?: string | null }) =>
+  (c.empresa && c.empresa.trim()) || (c.local && c.local.trim()) || `${c.nombre ?? ''} ${c.apellido ?? ''}`.trim() || 'Cliente'

@@ -696,3 +696,15 @@ input[type="range"] { padding: 0; accent-color: var(--navy); }
 .btn-shine:disabled { background: #e3e7ef; color: #7a849a; box-shadow: none; cursor: not-allowed; filter: none; }
 .btn-shine:disabled::after { display: none; }
 .comp-required { margin: 0; font-size: .85rem; }
+
+/* ---------- Tipo de cuenta (usuario básico / empresa) ---------- */
+.tipo-select { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 4px 0 6px; }
+.tipo-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 16px 14px; text-align: left; font: inherit; color: var(--navy); background: #f8faff; border: 2px solid var(--line); border-radius: 16px; cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .1s, background .15s; }
+.tipo-card:hover { border-color: #c9d3ea; transform: translateY(-1px); }
+.tipo-card.on { border-color: var(--yellow); background: #fffaf0; box-shadow: 0 0 0 4px rgba(255,201,60,.25); }
+.tipo-card b { font-size: 1.05rem; }
+.tipo-card small { color: #5b667d; font-size: .82rem; line-height: 1.45; }
+.tipo-icon { font-size: 1.8rem; line-height: 1; margin-bottom: 4px; }
+.tipo-check { position: absolute; top: 12px; right: 12px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: .8rem; font-weight: 800; color: var(--navy); background: #fff; }
+.tipo-card.on .tipo-check { background: var(--yellow); border-color: var(--yellow); }
+@media (max-width: 520px) { .tipo-select { grid-template-columns: 1fr; } }

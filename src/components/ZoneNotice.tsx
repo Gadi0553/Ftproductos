@@ -35,7 +35,7 @@ export function ZonesBanner({ zonas }: { zonas: Zona[] }) {
   // Cliente ya registrado con su negocio
   if (user && client) {
     const z = zonaPara({ lat: client.latitude, lng: client.longitude }, zonas)
-    const negocio = client.empresa || client.local || 'Tu negocio'
+    const negocio = client.empresa || client.local || 'Tu ubicación'
     return z ? (
       <div className="zones-banner ok">
         ✅ <span><b>{negocio}</b> está dentro de nuestra zona de entrega ({z.nombre}). ¡Haz tu pedido!</span>

@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import ClientFields, { ClientData, emptyClient } from '../components/ClientFields'
+import ClientFields, { ClientData, TipoSelector, datosNegocio, emptyClient } from '../components/ClientFields'
 import { useAuth } from '../context/AuthContext'
 import { errMsg, supabase } from '../lib/supabase'
 
@@ -13,6 +13,7 @@ export default function Profile() {
   useEffect(() => {
     if (client) {
       setData({
+        tipo: client.tipo ?? (client.empresa || client.local ? 'empresa' : 'basico'),
         nombre: client.nombre ?? '',
         apellido: client.apellido ?? '',
         numero: client.numero ?? '',
@@ -31,7 +32,8 @@ export default function Profile() {
   const save = async (e: FormEvent) => {
     e.preventDefault()
     if (!user) return
-    if (!data.pos) return setMsg({ ok: false, text: 'Marca la ubicación de tu empresa en el mapa' })
+    if (data.tipo === 'empresa' && !data.empresa.trim()) return setMsg({ ok: false, text: 'Escribe el nombre de tu empresa' })
+    if (!data.pos) return setMsg({ ok: false, text: 'Marca en el mapa el lugar de entrega' })
     setBusy(true)
     setMsg(null)
     const row = {
@@ -40,9 +42,7 @@ export default function Profile() {
       apellido: data.apellido,
       numero: data.numero,
       email: user.email,
-      empresa: data.empresa,
-      local: data.empresa,
-      descripcion_empresa: data.descripcion_empresa,
+      ...datosNegocio(data),
       direccion: data.direccion,
       referencia: data.referencia,
       latitude: data.pos.lat,
@@ -68,7 +68,9 @@ export default function Profile() {
     <div className="container page medium">
       <form className="card form" onSubmit={save}>
         <h1>Mi perfil {isAdmin && <span className="tag">Administrador</span>}{isDelivery && <span className="tag">Delivery</span>}</h1>
-        {!client && !isStaff && <div className="alert alert-warn">Completa tus datos y la ubicación de tu empresa para poder comprar.</div>}
+        {!client && !isStaff && <div className="alert alert-warn">Completa tus datos y el lugar de entrega para poder comprar.</div>}
+        <div className="label">Tipo de cuenta</div>
+        <TipoSelector value={data.tipo} onChange={(tipo) => setData({ ...data, tipo })} />
         <ClientFields value={data} onChange={setData} showEmail={false} />
         {msg && <div className={`alert ${msg.ok ? 'alert-ok' : 'alert-error'}`}>{msg.text}</div>}
         <button className="btn btn-primary btn-lg block" disabled={busy}>{busy ? 'Guardando…' : 'Guardar perfil'}</button>

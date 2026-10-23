@@ -4,7 +4,7 @@ import { Loading } from '../components/Guards'
 import MapView, { MapMarker } from '../components/MapView'
 import { LogTimeline, OrderProgress, StatusBadge } from '../components/OrderBits'
 import { COLORS } from '../components/useGoogleMap'
-import { fmtDate, fmtMoney } from '../lib/format'
+import { fmtDate, fmtMoney, destinatario } from '../lib/format'
 import BankInfo from '../components/BankInfo'
 import { ComprobanteCard } from '../components/Comprobante'
 import { supabase } from '../lib/supabase'
@@ -44,7 +44,7 @@ export default function OrderDetail() {
   const markers = useMemo<MapMarker[]>(() => {
     const m: MapMarker[] = []
     if (order?.latitude != null && order.longitude != null) {
-      m.push({ id: 'dest', pos: { lat: order.latitude, lng: order.longitude }, title: 'Tu empresa', color: COLORS.yellow, info: '<b>Punto de entrega</b>' })
+      m.push({ id: 'dest', pos: { lat: order.latitude, lng: order.longitude }, title: order.empresa ? 'Tu empresa' : 'Lugar de entrega', color: COLORS.yellow, info: '<b>Punto de entrega</b>' })
     }
     const last = logs.find((l) => l.latitude != null && l.longitude != null)
     if (last && order?.estado === 'en_camino') {
@@ -90,7 +90,7 @@ export default function OrderDetail() {
           <ComprobanteCard order={order} canUpload={!['entregado', 'cancelado'].includes(order.estado)} onChanged={() => loadRef.current()} />
           {order.notas_cliente && <p><b>Tus notas:</b> {order.notas_cliente}</p>}
           <h3>Entrega en</h3>
-          <p><b>{order.empresa}</b><br /><small className="muted">{order.direccion}</small></p>
+          <p><b>{destinatario(order)}</b><br /><small className="muted">{order.direccion}</small></p>
           {markers.length > 0 && <MapView height={240} markers={markers} />}
         </div>
         <div className="card">

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import MapView from '../components/MapView'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
-import { fmtMoney } from '../lib/format'
+import { fmtMoney, nombreCliente } from '../lib/format'
 import BankInfo from '../components/BankInfo'
 import { ComprobantePicker } from '../components/Comprobante'
 import { subirComprobante } from '../lib/comprobantes'
@@ -101,19 +101,19 @@ export default function Cart() {
             </>
           ) : !client ? (
             <>
-              <div className="alert alert-warn">Antes de comprar, completa tu perfil y la ubicación de tu empresa.</div>
+              <div className="alert alert-warn">Antes de comprar, completa tu perfil y el lugar de entrega.</div>
               <Link to="/perfil" className="btn btn-primary block">Completar perfil</Link>
             </>
           ) : (
             <>
               <h4>Entregar en</h4>
-              <p><b>{client.empresa || client.local}</b><br /><small className="muted">{client.direccion}</small></p>
-              <MapView height={180} markers={[{ id: 'c', pos: { lat: client.latitude, lng: client.longitude }, title: client.empresa ?? 'Mi empresa' }]} />
+              <p><b>{nombreCliente(client)}</b><br /><small className="muted">{client.direccion}</small></p>
+              <MapView height={180} markers={[{ id: 'c', pos: { lat: client.latitude, lng: client.longitude }, title: nombreCliente(client) }]} />
               <Link to="/perfil" className="small-link">Cambiar ubicación</Link>
               {zona && <div className="alert alert-ok">✅ Zona de entrega: <b>{zona.nombre}</b></div>}
               {fueraDeZona && (
                 <div className="alert alert-warn">
-                  ⚠️ Tu empresa está fuera de nuestra zona de entrega. Por ahora solo entregamos en: <b>{nombresZonas(zonas)}</b>.
+                  ⚠️ Tu lugar de entrega está fuera de nuestra zona. Por ahora solo entregamos en: <b>{nombresZonas(zonas)}</b>.
                 </div>
               )}
               <label>Método de pago

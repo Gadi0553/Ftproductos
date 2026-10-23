@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import MapView, { MapMarker } from '../../components/MapView'
 import { StatusBadge } from '../../components/OrderBits'
 import { COLORS } from '../../components/useGoogleMap'
-import { fmtDate, fmtMoney } from '../../lib/format'
+import { fmtDate, fmtMoney, destinatario } from '../../lib/format'
 import { supabase } from '../../lib/supabase'
 import type { Order } from '../../lib/types'
 
@@ -35,9 +35,9 @@ export default function Dashboard() {
     activos.filter((o) => o.latitude != null && o.longitude != null).map((o) => ({
       id: o.id,
       pos: { lat: o.latitude!, lng: o.longitude! },
-      title: `#${o.numero} ${o.empresa ?? ''}`,
+      title: `#${o.numero} ${destinatario(o)}`,
       color: o.estado === 'en_camino' ? COLORS.blue : COLORS.yellow,
-      info: `<b>Pedido #${o.numero}</b><br>${o.empresa ?? ''}<br>${fmtMoney(o.total)}`,
+      info: `<b>Pedido #${o.numero}</b><br>${destinatario(o)}<br>${fmtMoney(o.total)}`,
       onClick: () => nav(`/admin/pedidos/${o.id}`),
     })), [orders]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -68,7 +68,7 @@ export default function Dashboard() {
             {orders.slice(0, 8).map((o) => (
               <tr key={o.id} className="clickable" onClick={() => nav(`/admin/pedidos/${o.id}`)}>
                 <td>{o.numero}</td>
-                <td>{o.empresa}<br /><small className="muted">{o.cliente_nombre}</small></td>
+                <td>{destinatario(o)}{o.empresa && <><br /><small className="muted">{o.cliente_nombre}</small></>}</td>
                 <td>{fmtDate(o.created_at)}</td>
                 <td><StatusBadge estado={o.estado} /></td>
                 <td className="right">{fmtMoney(o.total)}</td>

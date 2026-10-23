@@ -70,7 +70,7 @@ export default function LocationPicker({ value, onChange, height = 320, zonas = 
         map,
         position: value,
         draggable: true,
-        title: 'Ubicación de la empresa',
+        title: 'Lugar de entrega',
         icon: {
           path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
           scale: 7,
@@ -143,7 +143,7 @@ export default function LocationPicker({ value, onChange, height = 320, zonas = 
       <small className="muted">
         {msg ?? (value
           ? `Ubicación: ${value.lat.toFixed(6)}, ${value.lng.toFixed(6)} · puedes arrastrar el pin para ajustarla`
-          : 'Haz clic en el mapa para marcar la ubicación exacta de tu empresa')}
+          : 'Haz clic en el mapa para marcar el lugar exacto de entrega')}
       </small>
     </div>
   )

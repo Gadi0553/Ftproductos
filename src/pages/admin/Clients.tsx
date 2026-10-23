@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import ClientFields, { ClientData, emptyClient } from '../../components/ClientFields'
+import ClientFields, { ClientData, TipoSelector, datosNegocio, emptyClient } from '../../components/ClientFields'
 import { Loading } from '../../components/Guards'
 import MapView, { MapMarker } from '../../components/MapView'
 import { fmtDate } from '../../lib/format'
@@ -28,6 +28,7 @@ export default function AdminClients() {
     setEditing(c)
     setError(null)
     setForm(c === 'new' ? emptyClient : {
+      tipo: c.tipo ?? (c.empresa || c.local ? 'empresa' : 'basico'),
       nombre: c.nombre, apellido: c.apellido, numero: c.numero, email: c.email ?? '',
       empresa: c.empresa ?? c.local ?? '', descripcion_empresa: c.descripcion_empresa ?? '',
       direccion: c.direccion ?? '', referencia: c.referencia ?? '', pos: { lat: c.latitude, lng: c.longitude },
@@ -41,7 +42,7 @@ export default function AdminClients() {
     setBusy(true)
     const row = {
       nombre: form.nombre, apellido: form.apellido, numero: form.numero, email: form.email || null,
-      empresa: form.empresa, local: form.empresa, descripcion_empresa: form.descripcion_empresa,
+      ...datosNegocio(form),
       direccion: form.direccion, referencia: form.referencia, latitude: form.pos.lat, longitude: form.pos.lng,
     }
     const { error } = editing === 'new'
@@ -81,6 +82,8 @@ export default function AdminClients() {
       {editing && (
         <form className="card form" onSubmit={save}>
           <h3>{editing === 'new' ? 'Nuevo cliente' : `Editar: ${editing.nombre} ${editing.apellido}`}</h3>
+          <div className="label">Tipo de cliente</div>
+          <TipoSelector value={form.tipo} onChange={(tipo) => setForm({ ...form, tipo })} />
           <ClientFields value={form} onChange={setForm} />
           {error && <div className="alert alert-error">{error}</div>}
           <div className="row">
@@ -100,12 +103,16 @@ export default function AdminClients() {
       {loading ? <Loading /> : (
         <div className="card">
           <table className="table">
-            <thead><tr><th>Cliente</th><th>Empresa</th><th>Contacto</th><th>Registro</th><th /></tr></thead>
+            <thead><tr><th>Cliente</th><th>Tipo / Empresa</th><th>Contacto</th><th>Registro</th><th /></tr></thead>
             <tbody>
               {shown.map((c) => (
                 <tr key={String(c.id)}>
                   <td><b>{c.nombre} {c.apellido}</b>{c.user_id && <><br /><span className="tag">Cuenta web</span></>}</td>
-                  <td>{c.empresa ?? c.local}<br /><small className="muted">{c.descripcion_empresa}</small></td>
+                  <td>
+                    {(c.tipo ?? (c.empresa || c.local ? 'empresa' : 'basico')) === 'basico'
+                      ? <span className="chip">👤 Usuario básico</span>
+                      : <><span className="chip">🏪 Empresa</span><br />{c.empresa ?? c.local}<br /><small className="muted">{c.descripcion_empresa}</small></>}
+                  </td>
                   <td>{c.numero}<br /><small className="muted">{c.email}</small></td>
                   <td className="nowrap"><small>{fmtDate(c.created_at)}</small></td>
                   <td className="right nowrap">
