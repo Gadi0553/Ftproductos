@@ -41,10 +41,18 @@ export default function Home() {
               {!user && <Link to="/registro" className="btn btn-outline-light btn-lg">Crear mi cuenta</Link>}
             </div>
           </div>
-          <div className="hero-art" aria-hidden>
-            <div className="bottle b1">🧃</div>
-            <div className="bottle b2">🍊</div>
-            <div className="bottle b3">🥭</div>
+          <div className="hero-video">
+            <div className="hero-video-frame">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/PDV4Ge19faw?rel=0&modestbranding=1"
+                title="FT Productos · Mini tutorial"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+            <span className="hero-video-cap">▶ Mira cómo pedir en FT Productos</span>
           </div>
         </div>
       </section>
