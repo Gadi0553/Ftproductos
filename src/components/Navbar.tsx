@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { useNotasSinLeer } from '../pages/StaffNotes'
 
 /* Íconos SVG ligeros (heredan el color del texto) */
 const I = {
@@ -13,6 +14,7 @@ const I = {
   user: <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0" />,
   logout: <path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h11" />,
   chevron: <path d="M6 9l6 6 6-6" />,
+  chat: <path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.6A8 8 0 1 1 21 12zM8 11h.01M12 11h.01M16 11h.01" />,
 }
 function Icon({ d, size = 18 }: { d: ReactNode; size?: number }) {
   return (
@@ -26,6 +28,7 @@ const ROLE_LABEL = { admin: 'Administrador', delivery: 'Delivery', cliente: 'Cli
 export default function Navbar() {
   const { user, isAdmin, isDelivery, profile, client, signOut } = useAuth()
   const { count } = useCart()
+  const sinLeer = useNotasSinLeer(isAdmin || isDelivery, user?.id)
   const [open, setOpen] = useState(false)       // menú móvil
   const [menu, setMenu] = useState(false)       // menú del usuario
   const menuRef = useRef<HTMLDivElement>(null)
@@ -68,6 +71,11 @@ export default function Navbar() {
             <NavLink to="/tienda" className="nav-pill"><Icon d={I.store} />Tienda</NavLink>
             {user && !isDelivery && <NavLink to="/mis-pedidos" className="nav-pill"><Icon d={I.orders} />Mis pedidos</NavLink>}
             {(isDelivery || isAdmin) && <NavLink to="/delivery" className="nav-pill"><Icon d={I.truck} />Entregas</NavLink>}
+            {(isDelivery || isAdmin) && (
+              <NavLink to="/notas" className="nav-pill nav-pill-notas">
+                <Icon d={I.chat} />Notas{sinLeer > 0 && <span className="nav-badge">{sinLeer > 9 ? '9+' : sinLeer}</span>}
+              </NavLink>
+            )}
             {isAdmin && <NavLink to="/admin" className="nav-pill nav-pill-admin"><Icon d={I.shield} />Panel admin</NavLink>}
           </div>
 
@@ -99,6 +107,7 @@ export default function Navbar() {
                     <Link to="/perfil" className="ud-item"><Icon d={I.user} />Mi perfil</Link>
                     {!isDelivery && <Link to="/mis-pedidos" className="ud-item"><Icon d={I.orders} />Mis pedidos</Link>}
                     {(isDelivery || isAdmin) && <Link to="/delivery" className="ud-item"><Icon d={I.truck} />Mis entregas</Link>}
+                    {(isDelivery || isAdmin) && <Link to="/notas" className="ud-item"><Icon d={I.chat} />Notas del equipo{sinLeer > 0 && <span className="nav-badge">{sinLeer}</span>}</Link>}
                     {isAdmin && <Link to="/admin" className="ud-item"><Icon d={I.shield} />Panel admin</Link>}
                     <button className="ud-logout" onClick={salir}><Icon d={I.logout} />Cerrar sesión</button>
                   </div>

@@ -27,6 +27,7 @@ import Zones from './pages/admin/Zones'
 import Categories from './pages/admin/Categories'
 import Invoice from './pages/Invoice'
 import VerifyEmail from './pages/VerifyEmail'
+import StaffNotes from './pages/StaffNotes'
 
 export default function App() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
           <Route path="/factura/:id" element={<RequireAuth><Invoice /></RequireAuth>} />
 
           <Route path="/delivery" element={<RequireStaff><div className="container page"><DeliveryHome /></div></RequireStaff>} />
+          <Route path="/notas" element={<RequireStaff><StaffNotes /></RequireStaff>} />
           <Route path="/delivery/:id" element={<RequireStaff><div className="container page"><AdminOrderDelivery /></div></RequireStaff>} />
 
           <Route path="/admin" element={<RequireAdmin><AdminLayout /></RequireAdmin>}>

@@ -715,3 +715,83 @@ input[type="range"] { padding: 0; accent-color: var(--navy); }
 .hero-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .hero-video-cap { align-self: center; font-size: .9rem; font-weight: 600; color: var(--yellow); }
 @media (max-width: 860px) { .hero-video { margin-top: 8px; } }
+
+/* ---------- Notas del equipo (chat admin ↔ delivery) ---------- */
+.nav-badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; margin-left: 4px; border-radius: 99px; background: #e5484d; color: #fff; font-size: .7rem; font-weight: 700; line-height: 1; }
+.notas-page h1 { margin-bottom: 2px; }
+.notas-card { display: flex; flex-direction: column; gap: 10px; padding: 0; overflow: hidden; }
+.notas-list { height: min(62vh, 620px); overflow-y: auto; padding: 18px 16px 8px; background: linear-gradient(180deg, #f4f6fb, #eef2fb); display: flex; flex-direction: column; gap: 6px; }
+.notas-empty { margin: auto; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #5b667d; text-align: center; }
+.notas-empty span { font-size: 2.4rem; }
+.notas-day { display: flex; justify-content: center; margin: 10px 0 6px; }
+.notas-day span { background: #dfe5f2; color: #4a5670; font-size: .74rem; font-weight: 600; padding: 3px 12px; border-radius: 99px; text-transform: capitalize; }
+.nota { display: flex; justify-content: flex-start; }
+.nota.mia { justify-content: flex-end; }
+.nota-bubble { position: relative; max-width: min(78%, 560px); padding: 8px 12px 6px; border-radius: 16px 16px 16px 4px; background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 6px rgba(10,31,68,.06); }
+.nota.mia .nota-bubble { background: #fff3c4; border-color: #ffe08a; border-radius: 16px 16px 4px 16px; }
+.nota-bubble p { margin: 2px 0 0; white-space: pre-wrap; word-break: break-word; color: var(--navy); line-height: 1.45; }
+.nota-autor { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--navy); }
+.nota-rol { font-size: .66rem; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: #eef2fb; color: var(--navy-2); text-transform: uppercase; letter-spacing: .03em; }
+.nota-rol.admin { background: var(--navy); color: var(--yellow); }
+.nota-rol.delivery { background: #e3f0ff; color: #1e4290; }
+.nota-pedido { margin: 4px 0 2px; padding: 3px 9px; border: 1px solid #c9d3ea; border-radius: 99px; background: #f8faff; color: var(--navy); font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer; }
+.nota-pedido:hover { background: var(--yellow); border-color: var(--yellow); }
+.nota-meta { display: flex; justify-content: flex-end; align-items: center; gap: 6px; font-size: .7rem; color: #7a849a; margin-top: 2px; }
+.nota-del { border: 0; background: none; color: #a0a8ba; cursor: pointer; font-size: .75rem; padding: 0 2px; opacity: 0; transition: opacity .15s; }
+.nota-bubble:hover .nota-del { opacity: 1; }
+@media (hover: none) { .nota-del { opacity: 1; } }
+.notas-form { display: grid; grid-template-columns: 150px 1fr auto; gap: 8px; align-items: end; padding: 10px 14px 14px; border-top: 1px solid var(--line); background: #fff; }
+.notas-form textarea { resize: none; min-height: 44px; max-height: 140px; field-sizing: content; }
+.notas-form .btn { height: 44px; }
+@media (max-width: 640px) {
+  .notas-form { grid-template-columns: 1fr auto; }
+  .notas-pedido { grid-column: 1 / -1; }
+  .nota-bubble { max-width: 88%; }
+}
+
+/* Notas: lista de deliverys + conversación */
+.notas-shell { display: grid; grid-template-columns: 1fr; height: min(74vh, 720px); padding: 0; overflow: hidden; }
+.notas-shell.con-lista { grid-template-columns: 300px 1fr; }
+.notas-side { border-right: 1px solid var(--line); overflow-y: auto; background: #fff; display: flex; flex-direction: column; }
+.notas-side-head { position: sticky; top: 0; z-index: 1; padding: 14px 16px; font-weight: 700; color: var(--navy); background: #fff; border-bottom: 1px solid var(--line); }
+.notas-side-empty { padding: 14px 16px; font-size: .88rem; }
+.notas-conv { display: flex; gap: 10px; align-items: center; width: 100%; padding: 11px 14px; border: 0; border-bottom: 1px solid #f0f2f8; background: #fff; font: inherit; text-align: left; cursor: pointer; color: var(--navy); }
+.notas-conv:hover { background: #f8faff; }
+.notas-conv.on { background: #fff8e1; box-shadow: inset 4px 0 0 var(--yellow); }
+.notas-conv-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.notas-conv-top, .notas-conv-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.notas-conv-top b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notas-conv-top small { color: #7a849a; font-size: .72rem; flex-shrink: 0; }
+.notas-conv-bottom small { color: #5b667d; font-size: .8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notas-avatar { flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--navy); color: var(--yellow); font-weight: 800; }
+.notas-chat { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.notas-chat-head { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: #fff; }
+.notas-chat-head div { display: flex; flex-direction: column; }
+.notas-chat-head small { color: #7a849a; font-size: .78rem; }
+.notas-back { display: none; border: 0; background: #eef2fb; color: var(--navy); width: 34px; height: 34px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; }
+.notas-chat .notas-list { flex: 1; height: auto; min-height: 0; }
+.notas-err { margin: 8px 14px 0; }
+.notas-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #5b667d; text-align: center; background: linear-gradient(180deg, #f4f6fb, #eef2fb); padding: 20px; }
+.notas-placeholder span { font-size: 2.6rem; }
+@media (max-width: 760px) {
+  .notas-shell.con-lista { grid-template-columns: 1fr; }
+  .notas-shell.con-lista.abierta .notas-side { display: none; }
+  .notas-shell.con-lista:not(.abierta) .notas-placeholder { display: none; }
+  .notas-back { display: grid; place-items: center; }
+}
+
+/* Notas: filtro por pedido asignado */
+.notas-filtro { display: flex; gap: 6px; padding: 8px 12px; overflow-x: auto; border-bottom: 1px solid var(--line); background: #fff; scrollbar-width: thin; }
+.notas-chip { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; max-width: 260px; padding: 5px 11px; border: 1px solid var(--line); border-radius: 99px; background: #f8faff; color: var(--navy); font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.notas-chip:hover { border-color: #c9d3ea; }
+.notas-chip.on { background: var(--yellow); border-color: var(--yellow); }
+.notas-chip.cerrado:not(.on) { opacity: .7; }
+.notas-chip em { font-style: normal; font-weight: 500; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.notas-chip i { font-style: normal; font-weight: 500; font-size: .7rem; padding: 1px 6px; border-radius: 99px; background: rgba(10,31,68,.08); }
+.notas-chip span { min-width: 18px; padding: 0 5px; border-radius: 99px; background: var(--navy); color: #fff; font-size: .7rem; text-align: center; }
+.notas-filtro-vacio { align-self: center; font-size: .8rem; }
+
+/* Notas: chat general */
+.notas-avatar.general { background: var(--yellow); color: var(--navy); font-size: 1.1rem; }
+.notas-conv.general { background: #fffdf5; border-bottom: 1px solid var(--line); }
+.notas-conv.general.on { background: #fff3c4; }

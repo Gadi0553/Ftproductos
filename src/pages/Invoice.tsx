@@ -84,9 +84,7 @@ export default function Invoice() {
               <h1>{NEGOCIO.nombre}</h1>
               <small>{NEGOCIO.eslogan}</small>
               <small>{NEGOCIO.direccion}</small>
-              <small>
-                {[NEGOCIO.telefono && `Tel. ${NEGOCIO.telefono}`, NEGOCIO.correo].filter(Boolean).join(' · ')}
-              </small>
+              {NEGOCIO.telefono && <small>Tel. {NEGOCIO.telefono}</small>}
               {NEGOCIO.rnc && <small>RNC: {NEGOCIO.rnc}</small>}
             </div>
           </div>
